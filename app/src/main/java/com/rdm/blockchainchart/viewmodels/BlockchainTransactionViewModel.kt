@@ -7,14 +7,8 @@ import com.rdm.blockchainchart.model.BlockchainTransactionsResponse
 import com.rdm.blockchainchart.repositories.BlockchainTransactionsRepository
 
 class BlockchainTransactionViewModel(application: Application) : AndroidViewModel(application) {
-    private var blockchainTransactionsRepository: BlockchainTransactionsRepository? = null
-    private var blockchainTransactionsResponseLiveData: LiveData<BlockchainTransactionsResponse?>? = null
-
-    fun init() {
-        blockchainTransactionsRepository = BlockchainTransactionsRepository()
-        blockchainTransactionsRepository!!.init()
-        blockchainTransactionsResponseLiveData = blockchainTransactionsRepository?.getBlockchainTransactionsResponseLiveData()
-    }
+    private var blockchainTransactionsRepository: BlockchainTransactionsRepository = BlockchainTransactionsRepository()
+    private var blockchainTransactionsResponseLiveData = blockchainTransactionsRepository.getBlockchainTransactionsResponseLiveData()
 
     fun searchBlockchainTransactions(timespan: String, rollingAverage: String) {
         blockchainTransactionsRepository?.searchBlockchainTransactions(timespan, rollingAverage)

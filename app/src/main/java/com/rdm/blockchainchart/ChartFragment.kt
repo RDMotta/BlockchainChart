@@ -18,12 +18,11 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.rdm.blockchainchart.model.BlockchainTransactionsResponse
 import com.rdm.blockchainchart.viewmodels.BlockchainTransactionViewModel
 import kotlinx.android.synthetic.main.chart_view.*
-import kotlinx.android.synthetic.main.content_main.*
 import java.util.*
+
 
 class ChartFragment : Fragment(), OnChartValueSelectedListener {
     private var blockchainTransactionViewModel: BlockchainTransactionViewModel? = null
-    //private val adapter: BookSearchResultsAdapter? = null
     private val entries: ArrayList<Entry> =
         ArrayList()
 
@@ -31,22 +30,16 @@ class ChartFragment : Fragment(), OnChartValueSelectedListener {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        blockchainTransactionViewModel = ViewModelProviders.of(this).get(BlockchainTransactionViewModel::class.java)
-        blockchainTransactionViewModel?.init()
-//        blockchainTransactionViewModel?.getBlockchainTransactionsResponseLiveData()
-//           ?.observe(this, object: Observer<BlockchainTransactionsResponse?>() {
-//            fun onChanged(blockchainTransactionsResponse: BlockchainTransactionsResponse?) {
-//                if (blockchainTransactionsResponse != null) {
-//                    //adapter.setResults(blockchainTransactionsResponse.values)
-//                }
-//            }
-//        })
-
-        return inflater.inflate(R.layout.fragment_chart, container, false)
+      return inflater.inflate(R.layout.fragment_chart, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        blockchainTransactionViewModel = ViewModelProviders.of(this).get(BlockchainTransactionViewModel::class.java)
+        //timespan=5weeks&rollingAverage=8hours
+        blockchainTransactionViewModel?.searchBlockchainTransactions("5weeks","8hours")
+
+
 
         var lineDataSet = LineDataSet(dataValues(), "Periodo")
         var dataSets: ArrayList<ILineDataSet> = ArrayList()
@@ -78,8 +71,10 @@ class ChartFragment : Fragment(), OnChartValueSelectedListener {
         val markerView = context?.let { CustomMarker(it, R.layout.entry_point_view) }
         line_chart.marker = markerView
         line_chart.invalidate()
-       //timespan=5weeks&rollingAverage=8hours
-        blockchainTransactionViewModel?.searchBlockchainTransactions("5weeks","8hours")
+
+       val blockchainTransactionsResponse = blockchainTransactionViewModel?.getBlockchainTransactionsResponseLiveData()
+   
+
     }
 
     private fun dataValues(): ArrayList<Entry>{
@@ -106,6 +101,3 @@ class ChartFragment : Fragment(), OnChartValueSelectedListener {
     }
 }
 
-private fun <T> LiveData<T>?.observe(chartFragment: ChartFragment, any: Any) {
-
-}

@@ -14,27 +14,24 @@ import retrofit2.Retrofit
 
 import retrofit2.converter.gson.GsonConverterFactory
 
-class BlockchainTransactionsRepository{
-
-    private val BASE_URL = "https://api.blockchain.info/"
+class BlockchainTransactionsRepository {
+    private val BASE_URL = "https://api.blockchain.info"
     private var blockchainTransactionsService: BlockchainTransactionsService? = null
     private var blockchainTransactionsResponseLiveData: MutableLiveData<BlockchainTransactionsResponse>? = null
 
-    fun init() {
+    constructor(){
         blockchainTransactionsResponseLiveData =
             MutableLiveData()
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client =
             OkHttpClient.Builder().addInterceptor(interceptor).build()
-
         blockchainTransactionsService = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(blockchainTransactionsService!!::class.java)
-        Log.d("BlockchainTransactionsRepository","Init classe BlockchainTransactionsRepository")
+            .create(BlockchainTransactionsService::class.java)
     }
 
     //timespan=5weeks&rollingAverage=8hours&format=json

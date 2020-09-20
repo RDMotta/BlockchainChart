@@ -57,6 +57,7 @@ dependencies {
     // alternatively - Lifecycles only (no ViewModel or LiveData).
     //     Support library depends on this lightweight import
     implementation "android.arch.lifecycle:runtime:$lifecycle_version"
+    implementation 'com.loopj.android:android-async-http:1.4.9'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
