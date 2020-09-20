@@ -1,5 +1,6 @@
 package com.rdm.blockchainchart.model
 
+import android.arch.lifecycle.Observer
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 

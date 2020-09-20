@@ -1,14 +1,11 @@
 package com.rdm.blockchainchart
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-
 class MainActivity : AppCompatActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +29,5 @@ class MainActivity : AppCompatActivity()  {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
 
 }
