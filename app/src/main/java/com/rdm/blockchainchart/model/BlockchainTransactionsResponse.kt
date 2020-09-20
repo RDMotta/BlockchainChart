@@ -3,7 +3,7 @@ package com.rdm.blockchainchart.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class ChartResponse {
+class BlockchainTransactionsResponse {
     @SerializedName("status")
     @Expose
     val status: String = ""
