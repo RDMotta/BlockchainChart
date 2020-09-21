@@ -2,7 +2,6 @@ package com.rdm.blockchainchart.repositories
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.util.Log
 import com.rdm.blockchainchart.api.BlockchainTransactionsService
 import com.rdm.blockchainchart.model.BlockchainChartUpdate
 import com.rdm.blockchainchart.model.BlockchainTransactionsResponse
@@ -37,7 +36,7 @@ class BlockchainTransactionsRepository {
     }
 
     fun searchBlockchainTransactions(timespan: String, rollingAverage: String) {
-    blockchainTransactionsService?.getBlockchainTransactions(timespan, rollingAverage)
+        blockchainTransactionsService?.getBlockchainTransactions(timespan, rollingAverage)
             ?.enqueue(object : Callback<BlockchainTransactionsResponse?> {
                 override fun onResponse(
                     call: Call<BlockchainTransactionsResponse?>?,

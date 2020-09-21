@@ -19,8 +19,6 @@ import com.rdm.blockchainchart.model.BlockchainTransactionsResponse
 import com.rdm.blockchainchart.model.PointValue
 import com.rdm.blockchainchart.viewmodels.BlockchainTransactionViewModel
 import kotlinx.android.synthetic.main.chart_view.*
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
@@ -35,7 +33,8 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        blockchainTransactionViewModel = ViewModelProviders.of(this).get(BlockchainTransactionViewModel::class.java)
+        blockchainTransactionViewModel = ViewModelProviders.of(this)
+            .get(BlockchainTransactionViewModel::class.java)
         blockchainTransactionViewModel?.blockchainChartUpdate = this
       return inflater.inflate(R.layout.fragment_chart, container, false)
     }
@@ -44,16 +43,15 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
         super.onViewCreated(view, savedInstanceState)
         seekBarWeek.setOnSeekBarChangeListener(this)
         seekBarHours.setOnSeekBarChangeListener(this)
-        blockchainTransactionsResponse = blockchainTransactionViewModel?.getBlockchainTransactionsResponseLiveData()
+        blockchainTransactionsResponse = blockchainTransactionViewModel
+            ?.getBlockchainTransactionsResponseLiveData()
     }
 
     private fun setupChart(blockchainTransactionsResponse: BlockchainTransactionsResponse?) {
 
-        var lineDataSet = LineDataSet(blockchainTransactionsResponse?.values?.let {
-            dataValues(
-                it
-            )
-
+        var lineDataSet = LineDataSet(
+                blockchainTransactionsResponse?.values?.let {
+            dataValues( it )
         }, blockchainTransactionsResponse?.period)
 
         var dataSets: ArrayList<ILineDataSet> = ArrayList()
@@ -62,12 +60,13 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
         var data = LineData(dataSets)
         lineDataSet.setDrawValues(false)
         lineDataSet.setDrawFilled(true)
+
         lineDataSet.lineWidth = 3f
         lineDataSet.fillColor = android.R.color.darker_gray
         lineDataSet.fillAlpha = android.R.color.holo_red_light
 
         lineDataSet.formLineWidth =1f
-        lineDataSet.setFormLineDashEffect(DashPathEffect(floatArrayOf(10f, 5f), 0f))
+        lineDataSet.formLineDashEffect = DashPathEffect(floatArrayOf(10f,5f), 0f)
         line_chart.xAxis.labelRotationAngle = 0f
 
         line_chart.data = data
@@ -98,6 +97,7 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
     override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
         val week = seekBarWeek.progress.toString().plus("weeks")
         val hours = seekBarHours.progress.toString().plus("hours")
+        tvFilter.text = "Filter options ".plus(week).plus(" and ").plus(hours)
         blockchainTransactionViewModel?.searchBlockchainTransactions(week,hours)
     }
 
