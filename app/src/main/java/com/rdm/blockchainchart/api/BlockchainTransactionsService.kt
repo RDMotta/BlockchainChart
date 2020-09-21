@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 interface BlockchainTransactionsService {
     @GET("/charts/transactions-per-second")
     fun getBlockchainTransactions(
-        @Query("timespan") query: String,
-        @Query("rollingAverage") author: String
+        @Query("timespan") timespan: String,
+        @Query("rollingAverage") rollingAverage: String
     ): Call<BlockchainTransactionsResponse>
 }

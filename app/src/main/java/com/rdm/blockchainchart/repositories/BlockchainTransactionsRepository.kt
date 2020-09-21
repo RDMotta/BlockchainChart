@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
 import com.rdm.blockchainchart.api.BlockchainTransactionsService
+import com.rdm.blockchainchart.model.BlockchainChartUpdate
 import com.rdm.blockchainchart.model.BlockchainTransactionsResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,6 +19,7 @@ class BlockchainTransactionsRepository {
     private val BASE_URL = "https://api.blockchain.info"
     private var blockchainTransactionsService: BlockchainTransactionsService? = null
     private var blockchainTransactionsResponseLiveData: MutableLiveData<BlockchainTransactionsResponse>? = null
+    var blockchainChartUpdate: BlockchainChartUpdate? = null
 
     constructor(){
         blockchainTransactionsResponseLiveData =
@@ -34,7 +36,6 @@ class BlockchainTransactionsRepository {
             .create(BlockchainTransactionsService::class.java)
     }
 
-    //timespan=5weeks&rollingAverage=8hours&format=json
     fun searchBlockchainTransactions(timespan: String, rollingAverage: String) {
     blockchainTransactionsService?.getBlockchainTransactions(timespan, rollingAverage)
             ?.enqueue(object : Callback<BlockchainTransactionsResponse?> {
@@ -44,6 +45,7 @@ class BlockchainTransactionsRepository {
                 ) {
                     if (response.body() != null) {
                         blockchainTransactionsResponseLiveData?.postValue(response.body())
+                        blockchainChartUpdate?.updateData(response)
                     }
                 }
 
@@ -52,6 +54,7 @@ class BlockchainTransactionsRepository {
                     t: Throwable?
                 ) {
                     blockchainTransactionsResponseLiveData?.postValue(null)
+                    blockchainChartUpdate?.updateData(null)
                 }
             })
     }

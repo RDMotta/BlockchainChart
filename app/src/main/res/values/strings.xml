@@ -3,6 +3,10 @@
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="chart_fragment_label">Chart Fragment</string>
-    <string name="next">Next</string>
+
     <string name="dash">0</string>
+    <string name="filter">Options to filter</string>
+    <string name="seek_timespan">Filter Weeks</string>
+    <string name="seek_rollingAverage">Filter Hours</string>
+
 </resources>
