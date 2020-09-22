@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.graphics.DashPathEffect
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,20 +16,24 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.rdm.blockchainchart.adapter.BlockchainTransactionAdapter
 import com.rdm.blockchainchart.model.BlockchainChartUpdate
 import com.rdm.blockchainchart.model.BlockchainTransactionsResponse
 import com.rdm.blockchainchart.model.PointValue
 import com.rdm.blockchainchart.viewmodels.BlockchainTransactionViewModel
-import kotlinx.android.synthetic.main.chart_view.*
+import kotlinx.android.synthetic.main.chart_line.*
+import kotlinx.android.synthetic.main.transactiondata_recycler.*
 import retrofit2.Response
 import java.util.*
 
 
 class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
     BlockchainChartUpdate {
+
     private var blockchainTransactionViewModel: BlockchainTransactionViewModel? = null
     private var blockchainTransactionsResponse: LiveData<BlockchainTransactionsResponse?>? = null
     private val entries: ArrayList<Entry> = ArrayList()
+    private val viewManager = LinearLayoutManager(context)
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -43,10 +49,26 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
         super.onViewCreated(view, savedInstanceState)
         seekBarWeek.setOnSeekBarChangeListener(this)
         seekBarHours.setOnSeekBarChangeListener(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
         blockchainTransactionsResponse = blockchainTransactionViewModel
             ?.getBlockchainTransactionsResponseLiveData()
     }
 
+    private fun setupAdapter(blockchainTransactionsResponse: BlockchainTransactionsResponse?){
+        val viewAdapter = BlockchainTransactionAdapter(blockchainTransactionsResponse?.values)
+        recyclerAdapter.apply {
+            setHasFixedSize(true)
+            layoutManager = viewManager
+            adapter = viewAdapter
+            addItemDecoration(DividerItemDecoration(
+                context,
+                DividerItemDecoration.HORIZONTAL
+            ))
+        }
+    }
     private fun setupChart(blockchainTransactionsResponse: BlockchainTransactionsResponse?) {
 
         var lineDataSet = LineDataSet(
@@ -77,7 +99,7 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
         blockchainTransactionsResponse?.let {
             line_chart.description.text = it.description
         }
-        line_chart.setNoDataText("No data value!")
+        line_chart.setNoDataText(getString(R.string.no_data_value))
         line_chart.animateX(1800, Easing.EaseInExpo)
         val markerView = context?.let { CustomMarker(it, R.layout.entry_point_view) }
         line_chart.marker = markerView
@@ -97,7 +119,7 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
     override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
         val week = seekBarWeek.progress.toString().plus("weeks")
         val hours = seekBarHours.progress.toString().plus("hours")
-        tvFilter.text = "Filter options ".plus(week).plus(" and ").plus(hours)
+        tvFilter.text =  getString(R.string.filter_result, seekBarWeek.progress, seekBarHours.progress)
         blockchainTransactionViewModel?.searchBlockchainTransactions(week,hours)
     }
 
@@ -108,6 +130,7 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
     override fun updateData(response: Response<BlockchainTransactionsResponse?>?) {
          if (response?.body() != null){
              setupChart(response.body())
+             setupAdapter(response.body())
          }
     }
 }
