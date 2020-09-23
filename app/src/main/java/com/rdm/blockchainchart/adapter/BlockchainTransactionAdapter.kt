@@ -5,12 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rdm.blockchainchart.R
-import com.rdm.blockchainchart.model.PointValue
+import com.rdm.blockchainchart.model.TransactionCoin
+import kotlinx.android.synthetic.main.card_transaction_coin.view.*
 import kotlinx.android.synthetic.main.transactiondata_itemview.view.*
-import java.time.Instant
-import java.time.ZoneId
 
-class BlockchainTransactionAdapter(private val dataSet: List<PointValue>?) :
+class BlockchainTransactionAdapter(private val dataSet: List<TransactionCoin>?) :
     RecyclerView.Adapter<BlockchainTransactionAdapter.BlockchainTransactionViewHolder>() {
 
     class BlockchainTransactionViewHolder(val viewData: View) : RecyclerView.ViewHolder(viewData)
@@ -18,17 +17,13 @@ class BlockchainTransactionAdapter(private val dataSet: List<PointValue>?) :
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): BlockchainTransactionAdapter.BlockchainTransactionViewHolder {
         val viewData = LayoutInflater.from(parent.context)
-            .inflate(R.layout.transactiondata_itemview, parent, false)
+            .inflate(R.layout.card_transaction_coin, parent, false)
 
         return BlockchainTransactionViewHolder(viewData)
     }
     override fun onBindViewHolder(holder: BlockchainTransactionViewHolder, position: Int) {
-        holder.viewData.tvDataValue.text = dataSet?.get(position)?.x?.toLong()?.let {
-            Instant.ofEpochSecond(it)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime().toString()
-        }
-        holder.viewData.tvValue.text = dataSet?.get(position)?.y.toString()
+        holder.viewData.tvDataValue.text = dataSet?.get(position)?.period
+        holder.viewData.tvValue.text = dataSet?.get(position)?.valueCoin?.toString()
     }
 
     override fun getItemCount(): Int{

@@ -5,6 +5,8 @@
     <string name="chart_fragment_label">Chart Fragment</string>
     <string name="no_data_value">No data value!</string>
     <string name="filter_result">Filter options: %1$d week and %2$d hours.</string>
+    <string name="qparam_week">weeks</string>
+    <string name="qparam_hour">hours</string>
     <string name="dash">0</string>
     <string name="filter">Options to filter</string>
     <string name="seek_timespan">Filter Weeks</string>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="table_name">transaction_coin</string>
+    <string-array name="db_create_table">
+        <item>
+            CREATE TABLE IF NOT EXISTS transaction_coin (Id INTEGER PRIMARY KEY, period TEXT, value_coin FLOAT);
+        </item>
+    </string-array>
+
+    <string-array name="db_drop_table">
+        <item>
+            Drop table IF EXISTS transaction_coin;
+        </item>
+    </string-array>
+</resources>

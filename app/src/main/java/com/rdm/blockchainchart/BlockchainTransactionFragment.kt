@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
         super.onViewCreated(view, savedInstanceState)
         seekBarWeek.setOnSeekBarChangeListener(this)
         seekBarHours.setOnSeekBarChangeListener(this)
+        setupAdapter()
     }
 
     override fun onResume() {
@@ -57,12 +59,21 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
             ?.getBlockchainTransactionsResponseLiveData()
     }
 
-    private fun setupAdapter(blockchainTransactionsResponse: BlockchainTransactionsResponse?){
-        val viewAdapter = BlockchainTransactionAdapter(blockchainTransactionsResponse?.values)
+    private fun updatAdapter(){
+        val viewAdapter = BlockchainTransactionAdapter(context?.let {
+            blockchainTransactionViewModel?.getLastBlockchainTransactionsDb(
+                it
+            )
+        })
+        recyclerAdapter.apply {
+            adapter = viewAdapter
+        }
+    }
+
+    private fun setupAdapter(){
         recyclerAdapter.apply {
             setHasFixedSize(true)
             layoutManager = viewManager
-            adapter = viewAdapter
             addItemDecoration(DividerItemDecoration(
                 context,
                 DividerItemDecoration.HORIZONTAL
@@ -117,8 +128,8 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
     }
 
     override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-        val week = seekBarWeek.progress.toString().plus("weeks")
-        val hours = seekBarHours.progress.toString().plus("hours")
+        val week =  seekBarWeek.progress.toString().plus(getString(R.string.qparam_week))
+        val hours = seekBarHours.progress.toString().plus(getString(R.string.qparam_hour))
         tvFilter.text =  getString(R.string.filter_result, seekBarWeek.progress, seekBarHours.progress)
         blockchainTransactionViewModel?.searchBlockchainTransactions(week,hours)
     }
@@ -127,10 +138,15 @@ class BlockchainTransactionFragment : Fragment(), SeekBar.OnSeekBarChangeListene
 
     override fun onStopTrackingTouch(p0: SeekBar?) { }
 
-    override fun updateData(response: Response<BlockchainTransactionsResponse?>?) {
+    override fun saveDataDb(itens: List<PointValue>){
+        context?.let {
+            blockchainTransactionViewModel?.saveDataDb(it, itens)
+            updatAdapter()
+        }
+    }
+    override fun updateDataChat(response: Response<BlockchainTransactionsResponse?>?) {
          if (response?.body() != null){
              setupChart(response.body())
-             setupAdapter(response.body())
          }
     }
 }
